@@ -1,0 +1,281 @@
+{
+  "openapi": "3.0.3",
+  "info": {
+    "title": "Cadastro Usuários",
+    "version": "1.0",
+    "x-logo": {
+      "url": ""
+    },
+    "description": "Cadastro Usuários",
+    "contact": {
+      "name": "Arthur",
+      "email": "thuur.vss@gmail.com",
+      "url": "https://www.linkedin.com/in/arthurv-silva/"
+    },
+    "license": {
+      "name": "MIT License",
+      "url": "https://opensource.org/licenses/MIT",
+      "x-last-modified": 1656209218364
+    }
+  },
+  "servers": [
+    {
+      "url": "api/v1"
+    }
+  ],
+  "tags": [
+    {
+      "description": "Cadastro de usuarios",
+      "name": "User"
+    }
+  ],
+  "paths": {
+    "/users": {
+      "summary": "Cadastro e consulta de usuários",
+      "description": "Cadastro e consulta de usuários",
+      "post": {
+        "summary": "Cria um usuário",
+        "operationId": "createUser",
+        "requestBody": {
+          "required": false,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/userPost"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Cria usuário",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/user"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Email já está em uso",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "User"
+        ]
+      },
+      "get": {
+        "summary": "Lista todos os usuários",
+        "description": "Somente o usuário ```admin``` pode acessar",
+        "operationId": "getUser",
+        "parameters": [
+          {
+            "in": "header",
+            "name": "user_id",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/user"
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Precisa ser admin",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "User"
+        ]
+      }
+    },
+    "/user/{user_id}": {
+      "get": {
+        "summary": "Retorna um susário específico",
+        "parameters": [
+          {
+            "name": "user_id",
+            "description": "ID do usuário",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/user"
+                }
+              }
+            },
+            "description": ""
+          },
+          "404": {
+            "description": "Usuário não encontrado",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "User"
+        ]
+      }
+    },
+    "/user/{user_id}/admin": {
+      "patch": {
+        "operationId": "turnAdmin",
+        "summary": "Torna um usuário admin",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "user_id",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/user"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/user"
+                }
+              }
+            },
+            "description": "torna admin"
+          },
+          "404": {
+            "description": "Usuário não encontrado",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "User"
+        ]
+      }
+    }
+  },
+  "components": {
+    "securitySchemes": {},
+    "schemas": {
+      "user": {
+        "type": "object",
+        "example": {
+          "id": "123e4567-e89b-12d3-a456-426614174000",
+          "name": "Arthur",
+          "email": "arthur@gmail.com",
+          "admin": true,
+          "creted_at": "Sun Jun 26 2022 00:42:05",
+          "updated_at": "Sun Jun 26 2022 00:42:05"
+        },
+        "properties": {
+          "id": {
+            "type": "string",
+            "example": "123e4567-e89b-12d3-a456-426614174000"
+          },
+          "name": {
+            "type": "string",
+            "example": "Arthur"
+          },
+          "email": {
+            "type": "string",
+            "example": "arthur@gmail.com"
+          },
+          "admin": {
+            "type": "boolean",
+            "example": true
+          },
+          "creted_at": {
+            "type": "string",
+            "format": "date-time",
+            "example": "Sun Jun 26 2022 00:42:05"
+          },
+          "updated_at": {
+            "type": "string",
+            "format": "date-time",
+            "example": "Sun Jun 26 2022 00:42:05"
+          }
+        }
+      },
+      "userPost": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "example": "Arthur"
+          },
+          "email": {
+            "type": "string",
+            "example": "arthur@gmail.com"
+          }
+        }
+      },
+      "error": {
+        "type": "object",
+        "properties": {
+          "error": {
+            "type": "string",
+            "example": "A solicitação retornou um erro"
+          }
+        }
+      }
+    }
+  }
+}
